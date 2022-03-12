@@ -1,8 +1,8 @@
----
+
 # tasks file for mysql_db
 ---
     - name: Install MySQL database
-      apt: name={{ item }} state=installed force=yes
+      apt: name={{ item }} state=present force=yes
       with_items:
         - mysql-server
         - mysql-client

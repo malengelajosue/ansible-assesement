@@ -1,63 +1,20 @@
----
-- name: web application
-  hosts: client 
-  gather_facts: false
+- name: Setup Database Server
+
+  hosts: db_servers
+  become: yes
+  become_method: sudo
+  connection: ssh
   tasks:
-    - name: Install web server
-      apt: name="{{ item }}" state=present
-      become: yes
-      with_items:
-        - python
-        - python3
-      
-        - python-setuptools
-        - python-dev
-        - build-essential
-        - python-pip
-
-
-
-    - name: Install  MySQL database
-      become: yes
-      apt:
-        name: "{{ item }}" 
-        state: present
-      with_items:
-        - mysql-server
-        - mysql-client
-
-    - name: Start MySQL service
-      become: yes
-      
-      service:
-      service:
-        
-        name: mysql
-        state: started
-        enabled: yes
-    - name: Create Application Database
-      mysql_user: name=employee_db state=present
-
-    - name: Create Database user 
-      become: yes
-      mysql_user:
-        name: db_user
-        password: Passw0rd
-        priv: '*.*:ALL'
-        state: present
-        host: '192.16.43.6'
-    - name: Install Python Flask dependency
-      become: yes
-      pip: 
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - flask
-        - flask-mysql
-    - name: Copy source code
-      copy: src=app.py dest='/opt/app.py'
-
-    - name: Start web server
-      shell: FLASK_APP= '/opt/app.py' nohup run --host=0.0.0.0 &
-
-
+    - name: ping
+      ping:
+  roles:
+    - python
+    - mysql_db
+- name: Setup Web Servers
+  hosts: web_servers
+  become: yes
+  become_method: sudo
+  connection: ssh
+  roles:
+    - python
+    - flask_web

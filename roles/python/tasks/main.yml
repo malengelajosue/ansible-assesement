@@ -1,8 +1,8 @@
 ---
 # tasks file for python
   - name: Install all required dependencies
-      apt: name={{ item }} state=installed force=yes
-      with_items:
+    apt: name={{ item }} state=present force=yes
+    with_items:
         - python
         - python-setuptools
         - python-dev
